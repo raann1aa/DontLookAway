@@ -1,0 +1,1052 @@
+/**
+ * Don't Look Away - Horror CCTV Surveillance Aesthetics
+ */
+
+:root {
+  --cctv-green: #26ff75;
+  --cctv-green-dim: #13883e;
+  --cctv-green-glow: rgba(38, 255, 117, 0.45);
+  --cctv-bg: #070d09;
+  --cctv-dark: #030604;
+  --cctv-red: #ff3344;
+  --cctv-red-glow: rgba(255, 51, 68, 0.5);
+  --cctv-amber: #ffaa22;
+  --cctv-border: #1a3322;
+  --cctv-font: 'Courier New', Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+  background-color: #030504;
+  color: var(--cctv-green);
+  font-family: var(--cctv-font);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================= DESK / MONITOR CASING ================= */
+#monitor-frame {
+  position: relative;
+  width: 96vw;
+  max-width: 1200px;
+  height: 94vh;
+  max-height: 820px;
+  background: #111412;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 
+    0 0 50px rgba(0, 0, 0, 0.9),
+    inset 0 0 15px #050806,
+    0 0 0 3px #1f2822;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Monitor Header Branding */
+.monitor-brand-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #556b5d;
+  padding-bottom: 8px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #1a241e;
+}
+
+.brand-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--cctv-green);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--cctv-green);
+  margin-right: 6px;
+  animation: pulsePower 2s infinite ease-in-out;
+}
+
+/* ================= CRT SCREEN AREA ================= */
+#cctv-monitor {
+  position: relative;
+  flex: 1;
+  background-color: var(--cctv-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95);
+  border: 2px solid #1c2620;
+}
+
+/* Vision Mode Variations */
+#cctv-monitor.vision-green {
+  --active-tint: #26ff75;
+  filter: contrast(1.1) brightness(1.05);
+}
+
+#cctv-monitor.vision-ir {
+  filter: grayscale(1) contrast(1.35) brightness(1.1);
+}
+
+#cctv-monitor.vision-amber {
+  filter: sepia(1) hue-rotate(-25deg) saturate(2.4) contrast(1.15);
+}
+
+/* Screen Flash when danger occurs */
+#cctv-monitor.flash-danger {
+  animation: flashRed 0.35s ease-out;
+}
+
+/* ================= SCANLINES & NOISE OVERLAYS ================= */
+.crt-scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.35) 50%
+  );
+  background-size: 100% 4px;
+  opacity: 0.85;
+}
+
+.crt-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 21;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.8), inset 0 0 140px rgba(0, 0, 0, 0.6);
+}
+
+.crt-flicker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 22;
+  opacity: 0.04;
+  background: white;
+  animation: crtFlicker 0.15s infinite;
+}
+
+/* Camera Static Glitch Layer */
+#camera-static-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 25;
+  opacity: 0.08;
+  background: repeating-radial-gradient(#000 0 0.0001%, #fff 0 0.0002%);
+  background-size: 300px 300px;
+  transition: opacity 0.15s ease;
+}
+
+.static-burst-active {
+  animation: staticNoise 0.08s steps(2) infinite !important;
+  opacity: 0.6 !important;
+}
+
+/* Rolling scanline bar */
+.crt-scan-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  background: rgba(38, 255, 117, 0.08);
+  pointer-events: none;
+  z-index: 23;
+  animation: scanRoll 8s linear infinite;
+}
+
+/* ================= CCTV HUD OVERLAYS ================= */
+.cctv-hud-header {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  right: 18px;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  text-shadow: 0 0 8px var(--cctv-green-glow);
+  pointer-events: none;
+}
+
+.cctv-hud-left, .cctv-hud-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* REC blinker */
+.rec-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cctv-red);
+  text-shadow: 0 0 10px var(--cctv-red-glow);
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.rec-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--cctv-red);
+  box-shadow: 0 0 10px var(--cctv-red);
+  animation: recBlink 1s infinite steps(2);
+}
+
+.hud-pill {
+  background: rgba(5, 15, 8, 0.7);
+  border: 1px solid var(--cctv-green-dim);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* ================= ROOM VIEWPORT (SVG) ================= */
+#surveillance-viewport {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #060a08;
+}
+
+#surveillance-viewport svg {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+/* Hover reticles on SVG objects */
+.room-object-group:hover .object-focus-reticle {
+  opacity: 0.65 !important;
+  stroke-dashoffset: 4;
+  animation: reticleSpin 2s linear infinite;
+}
+
+.room-object-group:active .object-focus-reticle {
+  opacity: 1 !important;
+  stroke: #ffffff !important;
+}
+
+/* Dynamic CSS classes for anomalies */
+.flicker-lamp-active {
+  animation: lampSparks 0.25s infinite alternate !important;
+}
+
+.door-pounding-active {
+  animation: doorSlam 0.12s 6 alternate !important;
+}
+
+/* ================= SURVEILLANCE STATUS BANNER ================= */
+.surveillance-banner {
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  z-index: 35;
+  background: rgba(3, 8, 4, 0.9);
+  border: 1px solid var(--cctv-green);
+  box-shadow: 0 0 15px var(--cctv-green-glow);
+  color: var(--cctv-green);
+  padding: 6px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+
+.surveillance-banner.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.surveillance-banner.banner-success {
+  border-color: var(--cctv-green);
+  color: var(--cctv-green);
+  box-shadow: 0 0 15px var(--cctv-green-glow);
+}
+
+.surveillance-banner.banner-error {
+  border-color: var(--cctv-red);
+  color: var(--cctv-red);
+  box-shadow: 0 0 18px var(--cctv-red-glow);
+}
+
+/* ================= TERMINAL LOG MINI-FEED ================= */
+.terminal-log-feed {
+  position: absolute;
+  bottom: 80px;
+  left: 18px;
+  width: 320px;
+  max-height: 90px;
+  overflow: hidden;
+  z-index: 30;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #669977;
+  pointer-events: none;
+  background: rgba(2, 6, 3, 0.6);
+  padding: 6px 10px;
+  border-left: 2px solid var(--cctv-green-dim);
+  border-radius: 0 4px 4px 0;
+}
+
+.terminal-log-entry {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 4px rgba(38, 255, 117, 0.3);
+}
+
+/* ================= BOTTOM SURVEILLANCE CONSOLE ================= */
+.cctv-hud-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: linear-gradient(to top, rgba(2, 5, 3, 0.95), rgba(2, 5, 3, 0.75) 80%, transparent);
+  padding: 10px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.console-stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.stats-left, .stats-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Threat Meter Bar */
+.threat-meter-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.threat-bar-track {
+  width: 140px;
+  height: 8px;
+  background: #09130d;
+  border: 1px solid #1c3523;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#hud-threat-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--cctv-green);
+  transition: width 0.2s ease, background-color 0.3s ease;
+}
+
+/* Report Action Bar */
+.console-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-report-object {
+  background: rgba(6, 20, 11, 0.8);
+  border: 1px solid var(--cctv-green-dim);
+  color: var(--cctv-green);
+  font-family: var(--cctv-font);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-report-object:hover {
+  background: var(--cctv-green);
+  color: #020603;
+  box-shadow: 0 0 10px var(--cctv-green-glow);
+  transform: translateY(-1px);
+}
+
+.btn-report-object:active {
+  transform: translateY(1px);
+}
+
+.hotkey-badge {
+  font-size: 9px;
+  background: #0d2616;
+  color: #a4e6b8;
+  padding: 1px 4px;
+  border-radius: 2px;
+  border: 1px solid #1e4d2e;
+}
+
+.btn-report-object:hover .hotkey-badge {
+  background: #020603;
+  color: var(--cctv-green);
+}
+
+/* Vision & Audio Controls */
+.vision-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-vision-mode {
+  background: #07150c;
+  border: 1px solid #1a3322;
+  color: #4a775a;
+  font-family: var(--cctv-font);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-vision-mode.active, .btn-vision-mode:hover {
+  border-color: var(--cctv-green);
+  color: var(--cctv-green);
+  background: #0f2b18;
+}
+
+/* Audio slider */
+.audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-sound-toggle {
+  background: none;
+  border: 1px solid #1a3322;
+  color: var(--cctv-green);
+  font-family: var(--cctv-font);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-sound-toggle.active {
+  border-color: var(--cctv-red);
+  color: var(--cctv-red);
+}
+
+#volume-slider {
+  width: 55px;
+  accent-color: var(--cctv-green);
+  cursor: pointer;
+}
+
+/* ================= MULTI-ROOM CAMERA CHANNEL SELECTOR ================= */
+.camera-selector-bar {
+  position: absolute;
+  top: 50px;
+  left: 18px;
+  right: 18px;
+  z-index: 32;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(4, 10, 6, 0.75);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--cctv-border);
+  backdrop-filter: blur(2px);
+}
+
+.camera-channel-btn {
+  flex: 1;
+  background: rgba(8, 20, 13, 0.7);
+  border: 1px solid var(--cctv-border);
+  color: #72a382;
+  font-family: var(--cctv-font);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.camera-channel-btn:hover {
+  background: #112d1b;
+  color: var(--cctv-green);
+  border-color: var(--cctv-green-dim);
+}
+
+.camera-channel-btn.active {
+  background: #153b23;
+  color: #ffffff;
+  border-color: var(--cctv-green);
+  box-shadow: 0 0 10px var(--cctv-green-glow);
+}
+
+.cam-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cctv-green);
+  box-shadow: 0 0 5px var(--cctv-green);
+}
+
+.cam-status-dot.offline {
+  background: var(--cctv-red);
+  box-shadow: 0 0 6px var(--cctv-red);
+  animation: pulsePower 1s infinite alternate;
+}
+
+.cam-status-dot.glitch {
+  background: var(--cctv-amber);
+  box-shadow: 0 0 6px var(--cctv-amber);
+}
+
+/* ================= FACILITY BLUEPRINT MINI-MAP ================= */
+#facility-map-container {
+  position: absolute;
+  top: 96px;
+  right: 18px;
+  z-index: 31;
+  width: 250px;
+  background: rgba(3, 8, 5, 0.88);
+  border: 1px solid var(--cctv-border);
+  border-radius: 6px;
+  padding: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(3px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#facility-map-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #72a382;
+  border-bottom: 1px solid #14281b;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.map-svg-wrap {
+  width: 100%;
+  height: 140px;
+}
+
+.map-svg-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+.map-room-node {
+  cursor: pointer;
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.map-room-node:hover rect {
+  fill: #153b23 !important;
+  stroke: var(--cctv-green) !important;
+}
+
+.map-room-node.active rect {
+  fill: #1d4d2e !important;
+  stroke: #ffffff !important;
+  stroke-width: 2 !important;
+  filter: drop-shadow(0 0 6px var(--cctv-green));
+}
+
+.map-door-icon {
+  cursor: pointer;
+}
+
+.map-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #557d63;
+  margin-top: 4px;
+}
+
+/* ================= POWER & SYSTEM ACTIONS ================= */
+.power-gauge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.power-bar-track {
+  width: 90px;
+  height: 8px;
+  background: #09130d;
+  border: 1px solid #1c3523;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+#hud-power-bar {
+  width: 100%;
+  height: 100%;
+  background: var(--cctv-green);
+  transition: width 0.3s ease, background-color 0.4s ease;
+}
+
+.power-low {
+  background-color: var(--cctv-red) !important;
+  animation: pulsePower 0.8s infinite alternate;
+}
+
+/* Action Toolbar */
+.security-actions-toolbar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-security-action {
+  background: #0b1a10;
+  border: 1px solid #1c3824;
+  color: var(--cctv-green);
+  font-family: var(--cctv-font);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.btn-security-action:hover {
+  background: #173822;
+  border-color: var(--cctv-green);
+  box-shadow: 0 0 8px var(--cctv-green-glow);
+}
+
+.btn-security-action.active-danger {
+  background: #3a1111;
+  border-color: var(--cctv-red);
+  color: var(--cctv-red);
+  box-shadow: 0 0 8px var(--cctv-red-glow);
+}
+
+/* ================= INCIDENT LOG & ARCHIVES MODAL ================= */
+.incident-log-card {
+  max-width: 780px;
+  width: 95%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-tabs-nav {
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid #14281b;
+  padding-bottom: 8px;
+}
+
+.btn-log-tab {
+  background: none;
+  border: 1px solid #1c3824;
+  color: #6d9b7d;
+  font-family: var(--cctv-font);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-log-tab.active, .btn-log-tab:hover {
+  background: #112d1b;
+  border-color: var(--cctv-green);
+  color: var(--cctv-green);
+}
+
+.log-tab-pane {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 50vh;
+  padding: 12px 4px;
+}
+
+.log-tab-pane.hidden {
+  display: none;
+}
+
+.lore-record-box {
+  background: #040a06;
+  border: 1px solid #12281a;
+  border-left: 3px solid var(--cctv-green-dim);
+  padding: 12px 14px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.lore-record-box.unlocked {
+  border-left-color: var(--cctv-green);
+}
+
+.lore-record-box.locked {
+  opacity: 0.5;
+  border-left-color: #555555;
+}
+
+.lore-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--cctv-green);
+  margin-bottom: 6px;
+}
+
+.lore-body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #9acbb0;
+}
+
+/* Radar pulse animation for scanner ping on map */
+@keyframes radarPing {
+  0% { r: 5px; opacity: 1; }
+  100% { r: 40px; opacity: 0; }
+}
+
+.radar-ping-circle {
+  animation: radarPing 1.2s ease-out 3;
+}
+
+/* ================= MODAL / OVERLAY SCREENS ================= */
+.cctv-screen-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: rgba(3, 7, 4, 0.94);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.cctv-screen-modal.hidden {
+  display: none !important;
+}
+
+.modal-content-card {
+  max-width: 620px;
+  width: 100%;
+  background: #06110a;
+  border: 2px solid var(--cctv-green-dim);
+  border-radius: 8px;
+  padding: 28px 34px;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(38, 255, 117, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-title {
+  font-size: 26px;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px var(--cctv-green-glow);
+  text-align: center;
+  border-bottom: 1px solid #142a1c;
+  padding-bottom: 12px;
+}
+
+.modal-subtitle {
+  font-size: 13px;
+  color: #72a382;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.rules-list {
+  list-style: none;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #8dbda0;
+  background: #040906;
+  border: 1px solid #112618;
+  padding: 14px 18px;
+  border-radius: 6px;
+}
+
+.rules-list li {
+  margin-bottom: 6px;
+}
+
+.rules-list li strong {
+  color: var(--cctv-green);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.btn-primary-cctv {
+  background: var(--cctv-green);
+  color: #020603;
+  font-family: var(--cctv-font);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 15px var(--cctv-green-glow);
+  transition: all 0.2s ease;
+}
+
+.btn-primary-cctv:hover {
+  background: #4dff8f;
+  transform: scale(1.03);
+  box-shadow: 0 0 25px var(--cctv-green-glow);
+}
+
+.btn-secondary-cctv {
+  background: transparent;
+  color: var(--cctv-green);
+  border: 1px solid var(--cctv-green-dim);
+  font-family: var(--cctv-font);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary-cctv:hover {
+  background: #0b2413;
+  border-color: var(--cctv-green);
+}
+
+/* Game Over Modal Styling */
+#game-over-screen .modal-content-card {
+  border-color: var(--cctv-red);
+  background: #110505;
+}
+
+#game-over-screen .modal-title {
+  color: var(--cctv-red);
+  text-shadow: 0 0 15px var(--cctv-red-glow);
+}
+
+#game-over-screen .btn-primary-cctv {
+  background: var(--cctv-red);
+  box-shadow: 0 0 18px var(--cctv-red-glow);
+}
+
+#game-over-screen .btn-primary-cctv:hover {
+  background: #ff5566;
+}
+
+/* Stats Grid */
+.stats-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: #030805;
+  padding: 14px;
+  border-radius: 6px;
+  border: 1px solid #132b1b;
+  font-size: 12px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: #557d63;
+  text-transform: uppercase;
+}
+
+.stat-val {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cctv-green);
+}
+
+.rank-badge {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+/* ================= KEYFRAME ANIMATIONS ================= */
+@keyframes pulsePower {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.9); }
+}
+
+@keyframes recBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.2; }
+}
+
+@keyframes scanRoll {
+  0% { transform: translateY(-50px); }
+  100% { transform: translateY(680px); }
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.03; }
+  50% { opacity: 0.055; }
+  100% { opacity: 0.02; }
+}
+
+@keyframes staticNoise {
+  0% { background-position: 0 0; }
+  25% { background-position: 50px 30px; }
+  50% { background-position: -40px 80px; }
+  75% { background-position: 90px -50px; }
+  100% { background-position: -20px -30px; }
+}
+
+@keyframes flashRed {
+  0% { background-color: rgba(255, 0, 0, 0.4); }
+  100% { background-color: var(--cctv-bg); }
+}
+
+@keyframes lampSparks {
+  0% { opacity: 0.95; }
+  15% { opacity: 0.1; }
+  25% { opacity: 0.85; }
+  45% { opacity: 0; }
+  60% { opacity: 0.7; }
+  85% { opacity: 0.15; }
+  100% { opacity: 1; }
+}
+
+@keyframes doorSlam {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-3px, 1px); }
+  100% { transform: translate(3px, -1px); }
+}
+
+@keyframes reticleSpin {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 28; }
+}
+
+/* ================= RESPONSIVE ADJUSTMENTS ================= */
+@media (max-width: 900px) {
+  #monitor-frame {
+    width: 99vw;
+    height: 98vh;
+    padding: 8px;
+  }
+
+  .cctv-hud-header {
+    font-size: 11px;
+    top: 8px;
+    left: 10px;
+    right: 10px;
+  }
+
+  .console-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .report-button-group {
+    justify-content: center;
+  }
+
+  .btn-report-object {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .terminal-log-feed {
+    display: none;
+  }
+}

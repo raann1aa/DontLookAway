@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don't Look Away // CCTV Multi-Room Surveillance Horror</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Physical CRT Monitor Frame -->
+  <main id="monitor-frame">
+    <!-- Top Hardware Bezel Bar -->
+    <header class="monitor-brand-bar">
+      <div>
+        <span class="brand-indicator"></span>
+        <span>SYSCON FACILITY NETWORK // SECTOR-7 MULTI-FEED SONY-SPEC 1994</span>
+      </div>
+      <div class="power-gauge-wrap">
+        <span>AUX GRID:</span>
+        <div class="power-bar-track">
+          <div id="hud-power-bar"></div>
+        </div>
+        <strong id="hud-power-text">100%</strong>
+      </div>
+    </header>
+
+    <!-- CRT Screen & Glass Surface -->
+    <section id="cctv-monitor" class="vision-green">
+      <!-- Vintage CRT & Atmospheric Shaders -->
+      <div class="crt-scanlines"></div>
+      <div class="crt-vignette"></div>
+      <div class="crt-flicker"></div>
+      <div class="crt-scan-bar"></div>
+      <div id="camera-static-overlay"></div>
+
+      <!-- Live Surveillance HUD Header -->
+      <div class="cctv-hud-header">
+        <div class="cctv-hud-left">
+          <div class="rec-indicator">
+            <span class="rec-dot"></span>
+            <span>REC</span>
+          </div>
+          <span class="hud-pill" id="hud-cam-title">CAM-04 : ISOLATION CELL</span>
+          <span class="hud-pill" id="hud-hour-badge">12 AM</span>
+        </div>
+        <div class="cctv-hud-right">
+          <span id="hud-date">1994-10-25</span>
+          <span id="hud-clock-time" class="hud-pill">00:00:00</span>
+          <span class="hud-pill">FPS: 30</span>
+        </div>
+      </div>
+
+      <!-- Multi-Camera Channel Selector Bar -->
+      <nav class="camera-selector-bar" role="navigation" aria-label="Camera Channels">
+        <button class="camera-channel-btn" data-cam="reception" title="Camera 1: Reception Foyer (Key Q)">
+          <span>[CAM-01] RECEPTION</span>
+          <span class="cam-status-dot" id="dot-cam-reception"></span>
+        </button>
+        <button class="camera-channel-btn" data-cam="corridor" title="Camera 2: Main Corridor (Key W)">
+          <span>[CAM-02] CORRIDOR</span>
+          <span class="cam-status-dot" id="dot-cam-corridor"></span>
+        </button>
+        <button class="camera-channel-btn" data-cam="lab" title="Camera 3: Research Lab (Key E)">
+          <span>[CAM-03] LAB</span>
+          <span class="cam-status-dot" id="dot-cam-lab"></span>
+        </button>
+        <button class="camera-channel-btn active" data-cam="isolation" title="Camera 4: Isolation Cell (Key R)">
+          <span>[CAM-04] ISOLATION</span>
+          <span class="cam-status-dot" id="dot-cam-isolation"></span>
+        </button>
+        <button class="camera-channel-btn" data-cam="storage" title="Camera 5: Storage Archive (Key T)">
+          <span>[CAM-05] STORAGE</span>
+          <span class="cam-status-dot" id="dot-cam-storage"></span>
+        </button>
+        <button class="camera-channel-btn" data-cam="basement" title="Camera 6: Sub-Basement (Key Y)">
+          <span>[CAM-06] BASEMENT</span>
+          <span class="cam-status-dot" id="dot-cam-basement"></span>
+        </button>
+      </nav>
+
+      <!-- Status Alert Banner -->
+      <aside id="surveillance-status-banner" class="surveillance-banner">
+        <span id="surveillance-status-text">INITIALIZING FACILITY NETWORK...</span>
+      </aside>
+
+      <!-- Facility Blueprint Mini-Map -->
+      <aside id="facility-map-container" aria-label="Facility Blueprint Map">
+        <div class="map-header">
+          <span>SECTOR-7 BLUEPRINT</span>
+          <button id="btn-close-map" style="background:none; border:none; color:#72a382; cursor:pointer;">&times;</button>
+        </div>
+        <div class="map-svg-wrap">
+          <svg viewBox="0 0 460 240" preserveAspectRatio="xMidYMid meet">
+            <!-- Connections between rooms -->
+            <!-- Corridor to Reception -->
+            <line x1="235" y1="80" x2="235" y2="105" stroke="#1d432b" stroke-width="6"/>
+            <!-- Corridor to Lab -->
+            <line x1="72" y1="147" x2="72" y2="175" stroke="#1d432b" stroke-width="6"/>
+            <!-- Corridor to Isolation -->
+            <line x1="182" y1="147" x2="182" y2="175" stroke="#1d432b" stroke-width="6"/>
+            <!-- Corridor to Storage -->
+            <line x1="292" y1="147" x2="292" y2="175" stroke="#1d432b" stroke-width="6"/>
+            <!-- Corridor to Basement -->
+            <line x1="402" y1="147" x2="402" y2="175" stroke="#1d432b" stroke-width="6"/>
+
+            <!-- Door indicators on map -->
+            <rect id="map-door-rec" class="map-door-icon" x="225" y="86" width="20" height="8" fill="#26ff75" rx="2"/>
+            <rect id="map-door-lab" class="map-door-icon" x="62" y="153" width="20" height="8" fill="#26ff75" rx="2"/>
+            <rect id="map-door-iso" class="map-door-icon" x="172" y="153" width="20" height="8" fill="#26ff75" rx="2"/>
+            <rect id="map-door-sto" class="map-door-icon" x="282" y="153" width="20" height="8" fill="#26ff75" rx="2"/>
+            <rect id="map-door-bas" class="map-door-icon" x="392" y="153" width="20" height="8" fill="#26ff75" rx="2"/>
+
+            <!-- ROOM 1: Reception -->
+            <g id="map-node-reception" class="map-room-node" data-cam="reception">
+              <rect x="190" y="35" width="90" height="45" fill="#0b1710" stroke="#1e3e29" stroke-width="1.5" rx="3"/>
+              <text x="235" y="62" fill="#88c49e" font-family="'Courier New', monospace" font-size="10" font-weight="bold" text-anchor="middle">REC (01)</text>
+            </g>
+
+            <!-- ROOM 2: Main Corridor -->
+            <g id="map-node-corridor" class="map-room-node" data-cam="corridor">
+              <rect x="40" y="105" width="390" height="42" fill="#0b1710" stroke="#1e3e29" stroke-width="1.5" rx="3"/>
+              <text x="235" y="130" fill="#88c49e" font-family="'Courier New', monospace" font-size="11" font-weight="bold" text-anchor="middle">MAIN CORRIDOR (02)</text>
+            </g>
+
+            <!-- ROOM 3: Lab -->
+            <g id="map-node-lab" class="map-room-node" data-cam="lab">
+              <rect x="30" y="175" width="85" height="50" fill="#0b1710" stroke="#1e3e29" stroke-width="1.5" rx="3"/>
+              <text x="72" y="204" fill="#88c49e" font-family="'Courier New', monospace" font-size="10" font-weight="bold" text-anchor="middle">LAB (03)</text>
+            </g>
+
+            <!-- ROOM 4: Isolation -->
+            <g id="map-node-isolation" class="map-room-node active" data-cam="isolation">
+              <rect x="140" y="175" width="85" height="50" fill="#0b1710" stroke="#1e3e29" stroke-width="1.5" rx="3"/>
+              <text x="182" y="204" fill="#88c49e" font-family="'Courier New', monospace" font-size="10" font-weight="bold" text-anchor="middle">ISO (04)</text>
+            </g>
+
+            <!-- ROOM 5: Storage -->
+            <g id="map-node-storage" class="map-room-node" data-cam="storage">
+              <rect x="250" y="175" width="85" height="50" fill="#0b1710" stroke="#1e3e29" stroke-width="1.5" rx="3"/>
+              <text x="292" y="204" fill="#88c49e" font-family="'Courier New', monospace" font-size="10" font-weight="bold" text-anchor="middle">STOR (05)</text>
+            </g>
+
+            <!-- ROOM 6: Basement -->
+            <g id="map-node-basement" class="map-room-node" data-cam="basement">
+              <rect x="360" y="175" width="85" height="50" fill="#0b1710" stroke="#1e3e29" stroke-width="1.5" rx="3"/>
+              <text x="402" y="204" fill="#88c49e" font-family="'Courier New', monospace" font-size="10" font-weight="bold" text-anchor="middle">BASE (06)</text>
+            </g>
+
+            <!-- Motion scanner sonar ping marker -->
+            <circle id="map-sonar-ping" cx="182" cy="204" r="5" fill="none" stroke="#26ff75" stroke-width="2" opacity="0"/>
+          </svg>
+        </div>
+        <div class="map-legend">
+          <span>● GREEN = UNLOCKED</span>
+          <span style="color:#ff4444;">● RED = BULKHEAD LOCKED</span>
+        </div>
+      </aside>
+
+      <!-- Main SVG Surveillance Room Viewport -->
+      <div id="surveillance-viewport" role="region" aria-label="Surveillance Room Camera Feed">
+        <!-- SVG injected by RoomRenderer for current active room -->
+      </div>
+
+      <!-- Live Terminal Event Log (lower left) -->
+      <div class="terminal-log-feed" aria-live="polite">
+        <div id="terminal-log-content"></div>
+      </div>
+
+      <!-- CCTV Console Footer & Interactive Controls -->
+      <footer class="cctv-hud-footer">
+        <!-- Stats & Actions Row -->
+        <div class="console-stats-row">
+          <div class="stats-left">
+            <div>
+              <span>SCORE: </span>
+              <strong id="hud-score">0</strong>
+            </div>
+            <div>
+              <span>BEST: </span>
+              <strong id="hud-highscore">0</strong>
+            </div>
+            <div id="hud-streak" style="color: #ffd700; font-weight: bold;"></div>
+            <div>
+              <span>INTEGRITY: </span>
+              <span id="hud-lives">❤️ ❤️ ❤️</span>
+            </div>
+          </div>
+
+          <!-- Middle Action Toolbar -->
+          <div class="security-actions-toolbar">
+            <button id="btn-toggle-door" class="btn-security-action" title="Toggle Bulkhead Lock on Current Room (Key D)">
+              🔒 BULKHEAD: OPEN
+            </button>
+            <button id="btn-reboot-camera" class="btn-security-action" title="Reboot Current Camera if Signal Drops (Key F)">
+              ⚡ REBOOT CAM
+            </button>
+            <button id="btn-motion-scan" class="btn-security-action" title="Ping Motion & Vibration Sensors (-4% power) (Key S)">
+              📡 SCAN MOTION
+            </button>
+            <button id="btn-open-logs" class="btn-security-action" title="Review Incident Logs & Transcripts (Key L)">
+              📋 INCIDENT LOGS
+            </button>
+            <button id="btn-toggle-map" class="btn-security-action" title="Toggle Facility Blueprint Map (Key Tab)">
+              🗺️ MAP
+            </button>
+          </div>
+
+          <div class="stats-right">
+            <div class="threat-meter-container">
+              <span>THREAT LEVEL:</span>
+              <div class="threat-bar-track">
+                <div id="hud-threat-bar"></div>
+              </div>
+              <strong id="hud-threat-text">0%</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action & Navigation Row -->
+        <div class="console-actions-row">
+          <!-- Dynamic Room Report Object Buttons -->
+          <div id="report-buttons-container" class="report-button-group" role="toolbar" aria-label="Anomaly Reporting Controls">
+            <!-- Dynamically populated per active room with keys 1-6 -->
+          </div>
+
+          <!-- Vision & Audio Controls -->
+          <div class="vision-controls-group">
+            <button id="btn-vision-green" class="btn-vision-mode active" title="Night Vision Green">NV-G</button>
+            <button id="btn-vision-ir" class="btn-vision-mode" title="Infrared Monochrome">IR-BW</button>
+            <button id="btn-vision-amber" class="btn-vision-mode" title="Vintage Amber">AMB</button>
+
+            <div class="audio-controls">
+              <button id="btn-mute" class="btn-sound-toggle" title="Toggle Sound (Key M)">🔊 MUTE</button>
+              <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.7" title="Master Volume">
+            </div>
+
+            <button id="btn-help" class="btn-vision-mode" title="How to Play">❓ HELP</button>
+          </div>
+        </div>
+      </footer>
+
+      <!-- ================= MODALS ================= -->
+
+      <!-- 1. Title / Shift Briefing Screen -->
+      <section id="title-screen" class="cctv-screen-modal">
+        <div class="modal-content-card">
+          <h1 class="modal-title">DON'T LOOK AWAY</h1>
+          <p class="modal-subtitle">
+            Sector 7 High-Security Terminal // Multi-Room Archive Surveillance Network<br>
+            Mandatory Shift Directive: 12:00 AM &ndash; 06:00 AM
+          </p>
+
+          <ul class="rules-list">
+            <li>📹 <strong>6-ROOM SURVEILLANCE:</strong> Monitor <strong>Reception (01)</strong>, <strong>Corridor (02)</strong>, <strong>Research Lab (03)</strong>, <strong>Isolation Cell (04)</strong>, <strong>Storage (05)</strong>, and <strong>Sub-Basement (06)</strong>. Switch feeds using channel buttons or keys <strong>[Q, W, E, R, T, Y]</strong>.</li>
+            <li>👁️ <strong>SUBJECT 7 (THE ENTITY):</strong> An autonomous entity moves through connected doors between rooms. It reacts to optical observation. If it stays on camera too long, static explodes. Stare too long and it attacks the feed; look away too long and it stalks closer.</li>
+            <li>🔒 <strong>POWER & BULKHEADS:</strong> Lock corridor doors to block its path, but beware: auxiliary power is finite. Each locked bulkhead continuously drains reserve capacitor charge.</li>
+            <li>⚠️ <strong>DETECT & REPORT:</strong> Anomalies (moving items, structural tears, weeping walls, light strobes) manifest across all rooms. Click suspicious objects in the camera feed directly or press <strong>[1-6]</strong> to report them.</li>
+            <li>❌ <strong>FALSE ALARMS PENALIZED:</strong> Reporting normal objects wastes power and costs 1 Integrity strike. You have <strong>3 Strikes</strong>.</li>
+            <li>📋 <strong>RECOVERED LORE:</strong> Review incident reports and transcripts in the <strong>Incident Logs</strong> as new records unlock each hour.</li>
+          </ul>
+
+          <div class="modal-actions">
+            <button id="btn-start-game" class="btn-primary-cctv">ENTER SURVEILLANCE FEED</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Game Over Screen -->
+      <section id="game-over-screen" class="cctv-screen-modal hidden">
+        <div class="modal-content-card">
+          <h1 class="modal-title">SIGNAL SEVERED</h1>
+          <p class="modal-subtitle" id="go-failure-cause">CRITICAL BREACH // OBSERVER LOST</p>
+
+          <div class="stats-summary-grid">
+            <div class="stat-item">
+              <span class="stat-label">Shift Duration</span>
+              <span class="stat-val" id="go-survived-time">00:00:00</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Anomalies Contained</span>
+              <span class="stat-val" id="go-anomalies-caught">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Final Score</span>
+              <span class="stat-val" id="go-final-score">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Security Status</span>
+              <span class="stat-val" style="color: var(--cctv-red);">TERMINATED</span>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="btn-restart-gameover" class="btn-primary-cctv">RESTART SHIFT</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Victory Screen -->
+      <section id="victory-screen" class="cctv-screen-modal hidden">
+        <div class="modal-content-card">
+          <h1 class="modal-title" style="color: #ffd700; text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);">06:00 AM // DAWN PURGE INITIATED</h1>
+          <p class="modal-subtitle">Automated UV floodlights active. Sector 7 secured. You survived the watch.</p>
+
+          <div class="stats-summary-grid">
+            <div class="stat-item">
+              <span class="stat-label">Final Security Score</span>
+              <span class="stat-val" id="vic-final-score">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Anomalies Contained</span>
+              <span class="stat-val" id="vic-anomalies-caught">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Reporting Accuracy</span>
+              <span class="stat-val" id="vic-accuracy">100%</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Officer Rating</span>
+              <span class="rank-badge" id="vic-rank">S</span>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button id="btn-restart-victory" class="btn-primary-cctv">ANOTHER SHIFT</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Pause Screen -->
+      <section id="pause-screen" class="cctv-screen-modal hidden">
+        <div class="modal-content-card">
+          <h2 class="modal-title">FEED PAUSED</h2>
+          <p class="modal-subtitle">Surveillance feed frozen. Anomalies and entities held in quantum stasis.</p>
+          <div class="modal-actions">
+            <button id="btn-resume" class="btn-primary-cctv">RESUME FEED</button>
+            <button id="btn-quit" class="btn-secondary-cctv">ABORT TO DESK</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Instructions / Help Modal -->
+      <section id="help-modal" class="cctv-screen-modal hidden">
+        <div class="modal-content-card">
+          <h2 class="modal-title">SURVEILLANCE MANUAL</h2>
+          <ul class="rules-list">
+            <li><strong>Cameras:</strong> [Q] Reception &bull; [W] Corridor &bull; [E] Lab &bull; [R] Isolation &bull; [T] Storage &bull; [Y] Basement.</li>
+            <li><strong>Actions:</strong> [D] Toggle Bulkhead Lock &bull; [F] Reboot Offline Camera &bull; [S] Sensor Scan &bull; [L] Incident Logs.</li>
+            <li><strong>Reporting:</strong> Click objects on camera feed, press keys <strong>1 through 6</strong>, or click the bottom object buttons.</li>
+            <li><strong>Entity (Subject 7):</strong> Moves through adjoining doors. When locked out, it pounds furiously. Check the Motion Scanner to detect where it last moved. Staring at it directly on camera for too long will provoke optical interference!</li>
+            <li><strong>Battery Management:</strong> Each locked bulkhead continuously consumes auxiliary power. If power drains to 0%, all doors fail open.</li>
+          </ul>
+          <div class="modal-actions">
+            <button id="btn-close-help" class="btn-primary-cctv">CLOSE MANUAL</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Incident Logs & Lore Archives Modal -->
+      <section id="incident-log-modal" class="cctv-screen-modal hidden">
+        <div class="modal-content-card incident-log-card">
+          <div class="log-tabs-nav">
+            <button id="tab-live-events" class="btn-log-tab active">LIVE SECURITY FEED</button>
+            <button id="tab-lore-archives" class="btn-log-tab">RECOVERED RECORDINGS</button>
+            <button id="btn-close-incident-modal" style="margin-left:auto; background:none; border:none; color:var(--cctv-green); font-size:18px; cursor:pointer;">&times;</button>
+          </div>
+
+          <!-- Tab Pane 1: Live Event Feed -->
+          <div id="pane-live-events" class="log-tab-pane">
+            <div id="incident-full-log" class="terminal-log-content"></div>
+          </div>
+
+          <!-- Tab Pane 2: Lore Archives -->
+          <div id="pane-lore-archives" class="log-tab-pane hidden">
+            <div id="lore-transcripts-container"></div>
+          </div>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- Game Scripts in dependency order -->
+  <script src="js/audio.js"></script>
+  <script src="js/rooms_data.js"></script>
+  <script src="js/room.js"></script>
+  <script src="js/entity.js"></script>
+  <script src="js/anomalies.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

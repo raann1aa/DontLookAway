@@ -1,0 +1,16 @@
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Editor directories
+.vscode/
+.idea/
+
+# Logs and test artifacts
+*.log
+verify_alignment.js
+simulate_gameplay.js
+test_multi_room.js
